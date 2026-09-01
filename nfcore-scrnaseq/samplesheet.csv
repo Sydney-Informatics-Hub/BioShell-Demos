@@ -1,0 +1,7 @@
+sample,fastq_1,fastq_2
+Pre1,/mnt/data/subset_fastq/GSM5320463/SRR14575504_1.fastq.gz,/mnt/data/subset_fastq/GSM5320463/SRR14575504_2.fastq.gz
+Pre2,/mnt/data/subset_fastq/GSM5320464/SRR14575505_1.fastq.gz,/mnt/data/subset_fastq/GSM5320464/SRR14575505_2.fastq.gz
+Pre3,/mnt/data/subset_fastq/GSM5320465/SRR14575506_1.fastq.gz,/mnt/data/subset_fastq/GSM5320465/SRR14575506_2.fastq.gz
+Post1,/mnt/data/subset_fastq/GSM5320467/SRR14575508_1.fastq.gz,/mnt/data/subset_fastq/GSM5320467/SRR14575508_2.fastq.gz
+Post2,/mnt/data/subset_fastq/GSM5320468/SRR14575509_1.fastq.gz,/mnt/data/subset_fastq/GSM5320468/SRR14575509_2.fastq.gz
+Post3,/mnt/data/subset_fastq/GSM5320469/SRR14575510_1.fastq.gz,/mnt/data/subset_fastq/GSM5320469/SRR14575510_2.fastq.gz
