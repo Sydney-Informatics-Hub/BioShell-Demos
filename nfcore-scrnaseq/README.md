@@ -20,6 +20,7 @@ Using singularity containers allows you to avoid downloading/compiling software 
 
 ```bash
 module load nextflow singularity
+cvmfs_config probe
 ```
 
 Pull the repository for the Nextflow pipeline with a local `git clone`, so you know exactly where your pipeline is saved and can pin it to a specific release yourself.
