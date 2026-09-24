@@ -1,43 +1,52 @@
 # nfcore-scrnaseq
 
+## Prep
+
+Download data and references to /mnt/data/fastq and /mnt/data/refs
+
 ## Overview
 
-The data being used
+In this video I will be stepping through how to configure and run Nextflow on the BioShell.
 
-The pipeline being used
+As an example, I will run nf-core/scrnaseq on their minimal test data.
 
 ## How to pull a Nextflow pipeline
 
-First let’s prepare our BioShell by changing directories into your provisioned volume. Recommend working in the volume, as pipelines often generate and use large data.
+First I will prepare my BioShell by changing directories into my provisioned data volume. We recommend storing your data, and working in the volume, as bioinformatics pipelines often generate and use large data which will exceed the storage on the X.
 
 ```bash
 cd /mnt/data/
 ```
 
-Next, load the nextflow and singularity modules. Nextflow will be used to run the processes, and singularity the individual processes within them.
+Next, I will load the nextflow and singularity modules. 
 
-Using singularity containers allows you to avoid downloading/compiling software and conda environments.
+Nextflow will be used to run the pipeline, and singularity to execute the individual tool versions within them.
 
 ```bash
 module load nextflow singularity
+```
+
+Probe the CVMFS to ensure Nextflow can access the singularity images.
+
+```bash
 cvmfs_config probe
 ```
 
-Pull the repository for the Nextflow pipeline with a local `git clone`, so you know exactly where your pipeline is saved and can pin it to a specific release yourself.
+Next, I will pull the code for nf-core/scrnaseq pipeline using `nextflow pull`.
 
 ```bash
 nextflow pull nfcore/scrnaseq
 ```
 
-If pulling from a personal repo you can e.g. use `git clone https://github.com/Sydney-Informatics-Hub/Parabricks-Genomics-nf.git`. Adapt to your needs.
+If you are new to nf-core or nextflow, I recommend pulling the pipelines to your BioShell, so you know exactly where your pipeline files live, and what is being run.
+
+Alternatively, you can use `git clone` here as well.
 
 Confirm that it pulled successfully
 
 ```bash
 ls
 ```
-
-From here on, every `nextflow` command below refers to this local clone by its path (`/mnt/data/scrnaseq`) — not by the shorthand `nf-core/scrnaseq`, which instead pulls a separate copy into Nextflow's own hidden asset cache (`~/.nextflow/assets`). Using your own local clone means the exact pipeline code is sitting right here, browsable and reproducible, instead of tucked away somewhere you'd need to go looking for it.
 
 ## How to check which containers are used
 
@@ -51,33 +60,12 @@ So how do you actually know which ones apply to *your* run? Use the `-preview` f
 
 ```bash
 nextflow run /mnt/data/scrnaseq \
-  --input /mnt/data/samplesheet.csv \
-  --outdir gse174609_run \
-  --aligner star \
-  --protocol 10XV3 \
-  --fasta reference_chr19/Homo_sapiens.GRCh38.dna.chromosome.19.fa \
-  --gtf creference_chr19/Homo_sapiens.GRCh38.114.chr19.gtf \
   -profile singularity \
+  -c bioshell.config \
   -preview -with-dag dag.png
 ```
 
 Open `dag.png`. It's busy — full of small dot/circle nodes for plumbing steps like `map`, `mix`, `groupTuple` — ignore all of those. What you're looking for are the labelled oval boxes, each named `NFCORE_SCRNASEQ:SCRNASEQ:...:PROCESS_NAME`. For this run there are exactly 10 of them, no `cellranger`, `simpleaf`, or `kallisto` process anywhere:
-
-Alternatively you could run it quickly to see which processes will be run.
-
-```
-executor >  local (9)
-[2d/4abedf] NFCORE_SCRNASEQ:SCRNASEQ:FASTQC_CHECK:FASTQC (Post3)                                                   [100%] 6 of 6 ✔
-[7c/92d29c] NFCORE_SCRNASEQ:SCRNASEQ:PREPARE_GENOME:GTF_GENE_FILTER (Homo_sapiens.GRCh38.dna.chromosome.19.fa)     [100%] 1 of 1 ✔
-[37/b12c34] NFCORE_SCRNASEQ:SCRNASEQ:STARSOLO:STAR_GENOMEGENERATE (Homo_sapiens.GRCh38.dna.chromosome.19.fa)       [100%] 1 of 1 ✔
-[c8/9392f3] NFCORE_SCRNASEQ:SCRNASEQ:STARSOLO:STAR_ALIGN (Pre1)                                                    [  0%] 0 of 6
-[-        ] NFCORE_SCRNASEQ:SCRNASEQ:MTX_TO_H5AD                                                                   -
-[-        ] NFCORE_SCRNASEQ:SCRNASEQ:H5AD_REMOVEBACKGROUND_BARCODES_CELLBENDER_ANNDATA:CELLBENDER_REMOVEBACKGROUND -
-[-        ] NFCORE_SCRNASEQ:SCRNASEQ:H5AD_REMOVEBACKGROUND_BARCODES_CELLBENDER_ANNDATA:ANNDATA_BARCODES            -
-[-        ] NFCORE_SCRNASEQ:SCRNASEQ:H5AD_CONVERSION:CONCAT_H5AD                                                   -
-[-        ] NFCORE_SCRNASEQ:SCRNASEQ:H5AD_CONVERSION:ANNDATAR_CONVERT                                              -
-[-        ] NFCORE_SCRNASEQ:SCRNASEQ:MULTIQC                                                                       -
-```
 
 ```
 ANNDATA_BARCODES
@@ -146,16 +134,12 @@ EOF
 
 Each `withName { }` block points that one process straight at a local file — Nextflow runs `singularity exec` on it directly, with no cache directory and no download involved at all. Anything not listed here still downloads the normal way, so a pipeline with a mix of covered and uncovered containers (like this one) never breaks.
 
-Apply it with `-c`:
+Apply it with `-c` (all of `input`/`fasta`/`gtf`/`aligner`/`protocol` already live in `bioshell.config`, so the run command stays minimal — see `run.sh`):
 
 ```bash
 nextflow run /mnt/data/scrnaseq \
-  --input /mnt/data/samplesheet.csv \
-  --outdir gse174609_run \
-  --aligner star \
-  --protocol 10XV3 \
-  --fasta reference_chr19/Homo_sapiens.GRCh38.dna.chromosome.19.fa \
-  --gtf reference_chr19/Homo_sapiens.GRCh38.114.chr19.gtf \
   -profile singularity \
-  -preview -with-dag dag.png
-``` 
+  -c bioshell.config \
+  --outdir results \
+  -resume
+```

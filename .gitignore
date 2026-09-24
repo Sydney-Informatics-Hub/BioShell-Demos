@@ -1,0 +1,11 @@
+# files
+*.fastq.gz
+*.fa
+*.fasta
+*.gtf
+*.rds
+*.h5ad
+
+# vim
+*.swo
+*.swp

@@ -1,7 +1,7 @@
 sample,rds_path
-Pre1,/mnt/data/gse174609_run/star/mtx_conversions/Post1/Post1_filtered_matrix.seurat.rds
-Pre2,/mnt/data/gse174609_run/star/mtx_conversions/Post2/Post2_filtered_matrix.seurat.rds
-Pre3,/mnt/data/gse174609_run/star/mtx_conversions/Post3/Post3_filtered_matrix.seurat.rds
+Pre1,/mnt/data/gse174609_run/star/mtx_conversions/Pre1/Pre1_filtered_matrix.seurat.rds
+Pre2,/mnt/data/gse174609_run/star/mtx_conversions/Pre2/Pre2_filtered_matrix.seurat.rds
+Pre3,/mnt/data/gse174609_run/star/mtx_conversions/Pre3/Pre3_filtered_matrix.seurat.rds
 Post1,/mnt/data/gse174609_run/star/mtx_conversions/Post1/Post1_filtered_matrix.seurat.rds
 Post2,/mnt/data/gse174609_run/star/mtx_conversions/Post2/Post2_filtered_matrix.seurat.rds
 Post3,/mnt/data/gse174609_run/star/mtx_conversions/Post3/Post3_filtered_matrix.seurat.rds
